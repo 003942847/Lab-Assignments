@@ -1,1 +1,88 @@
-a
+#include <iostream>
+
+class Math {
+public:
+   int Addition(int x, int y);
+   int Multiply(int x, int y);
+};
+
+int Math::Addition(int x, int y) {
+
+   return (x + y);
+}
+
+int Math::Multiply(int x, int y) {
+   return (x * y);
+}
+
+using namespace CppUnit;
+using namespace std;
+
+class Math : public CppUnit::TestFixture {
+    CPPUNIT_TEST_SUITE(TestMath);
+    CPPUNIT_TEST(testAddition);
+    CPPUNIT_TEST(testMultiply);
+    CPPUNIT_TEST_SUITE_END();
+
+public:
+    void setUp(void);
+    void tearDown(void);
+
+protected:
+    void testAddition(void);
+    void testMultiply(void);
+
+private:
+
+    Math *mTestObj;
+};
+
+
+void
+Math::testAddition(void)
+{
+    CPPUNIT_ASSERT(5 == mTestObj->Addition(2,3));
+}
+
+void
+Math::testMultiply(void)
+{
+    CPPUNIT_ASSERT(6 == mTestObj->Multiply(3,7));
+}
+
+void Math::setUp(void)
+{
+    mTestObj = new Math();
+}
+
+void Math::tearDown(void)
+{
+    delete mTestObj;
+}
+
+
+
+CPPUNIT_TEST_SUITE_REGISTRATION( TestMath );
+
+int main(int argc, char* argv[])
+{
+
+    CPPUNIT_NS::TestResult testresult;
+
+    CPPUNIT_NS::TestResultCollector collectedresults;
+    testresult.addListener (&collectedresults);
+
+    CPPUNIT_NS::BriefTestProgressListener progress;
+    testresult.addListener (&progress);
+
+    CPPUNIT_NS::TestRunner testrunner;
+    testrunner.addTest (CPPUNIT_NS::TestFactoryRegistry::getRegistry().makeTest ());
+    testrunner.run(testresult);
+
+    CPPUNIT_NS::CompilerOutputter compileroutputter(&collectedresults, std::cerr);
+    compileroutputter.write ();
+
+    // return 0 if tests were successful
+    return collectedresults.wasSuccessful() ? 0 : 1;
+}
+          
